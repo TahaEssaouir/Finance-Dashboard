@@ -56,9 +56,9 @@ export function TransactionActions({ transaction }: TransactionActionsProps) {
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-8 p-0 bg-transparent border-0 hover:bg-zinc-800"
+            className="h-8 w-8 p-0 bg-transparent border-0 hover:bg-teal-900/50 hover:scale-110 transition-all duration-200"
           >
-            <MoreHorizontal className="h-4 w-4 text-zinc-400" />
+            <MoreHorizontal className="h-4 w-4 text-teal-400 hover:text-teal-300" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent

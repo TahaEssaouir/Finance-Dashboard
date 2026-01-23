@@ -88,9 +88,9 @@ export function TransactionFilters() {
   const selectedCategory = searchParams.get("category") || "All Categories";
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-4">
+    <div className="flex flex-col gap-3 w-full md:flex-row md:items-end md:gap-6">
       {/* Search Input */}
-      <div className="w-[400px]">
+      <div className="w-full md:w-[300px]">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
           <Input
@@ -98,15 +98,15 @@ export function TransactionFilters() {
             placeholder="Search by title..."
             value={searchQuery}
             onChange={handleSearchChange}
-            className="pl-10 bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus-visible:ring-zinc-600"
+            className="pl-10 bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus-visible:ring-zinc-600 w-full"
           />
         </div>
       </div>
 
       {/* Category Select */}
-      <div className="w-[200px]">
+      <div className="w-full md:w-[200px]">
         <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-          <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white focus:ring-zinc-600">
+          <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white focus:ring-zinc-600 w-full md:w-[200px]">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent className="bg-zinc-800 border-zinc-700 text-white">
@@ -120,13 +120,13 @@ export function TransactionFilters() {
       </div>
 
       {/* Date Picker */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 w-full md:w-auto">
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
               className={cn(
-                "w-[200px] justify-start text-left font-normal bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700 hover:text-white",
+                "w-full md:w-[200px] justify-start text-left font-normal bg-zinc-950 border-zinc-700 text-white hover:bg-zinc-900 hover:text-white",
                 !selectedDate && "text-zinc-500"
               )}
             >

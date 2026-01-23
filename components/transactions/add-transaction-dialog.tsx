@@ -218,7 +218,7 @@ export function AddTransactionDialog() {
                 disabled={loading}
                 className="flex-1 bg-emerald-600 text-white hover:bg-emerald-700"
               >
-                {loading ? "Adding..." : "Add Transaction"}
+                {loading ? "Adding..." : "Add "}
               </Button>
               <Button
                 type="button"
