@@ -145,15 +145,19 @@ export default async function TransactionsPage({
       <div className="p-4 md:p-12 space-y-3 md:space-y-6">
         {/* Header */}
         <header className="mb-6 lg:mb-16">
-          <div className="flex items-center justify-between w-full mb-2">
-            <h1 className="text-2xl lg:text-4xl font-bold bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
-              Transactions History
-            </h1>
-            <AddTransactionDialog />
+          <div className="flex flex-col items-start gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h1 className="text-2xl lg:text-4xl font-bold bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
+                Transactions History
+              </h1>
+              <p className="text-zinc-400 mt-2 text-sm lg:text-base">
+                Track, filter, and manage your financial activity.
+              </p>
+            </div>
+            <div className="w-full lg:w-auto">
+              <AddTransactionDialog />
+            </div>
           </div>
-          <p className="text-zinc-400 text-sm lg:text-base">
-            Track, filter, and manage your financial activity.
-          </p>
         </header>
 
         {/* Filters */}
