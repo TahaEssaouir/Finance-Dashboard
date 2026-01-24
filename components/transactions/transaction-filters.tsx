@@ -20,7 +20,8 @@ import { Search, CalendarIcon, X } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { useDebouncedCallback } from "use-debounce"; // Ila ma3ndkch: npm i use-debounce
+import { useDebouncedCallback } from "use-debounce";
+import { YearSelector } from "./year-selector";
 
 const CATEGORIES = [
   "All Categories",
@@ -32,15 +33,14 @@ const CATEGORIES = [
   "Other",
 ];
 
-export function TransactionFilters() {
+export function TransactionFilters({ currentYear }: { currentYear: number }) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // State ghir bach n-affichiw valeur f l'input (UI only)
+
   const [searchQuery, setSearchQuery] = useState(searchParams.get("query") || "");
 
-  // Hada howa l fonction li kybdel URL direct
-  // Ma m7tajch useCallback m3a searchParams hna 7it ghadi n3ytoulha direct
+
   const updateFilter = (key: string, value: string | undefined) => {
     const params = new URLSearchParams(searchParams.toString());
     
@@ -53,9 +53,7 @@ export function TransactionFilters() {
     router.replace(`/transactions?${params.toString()}`, { scroll: false });
   };
 
-  // ✅ DEBOUNCE: Hada howa l fix. 
-  // Next.js ma ghadi ybdel URL ta doz 500ms bla ktba.
-  // Ila ma3ndkch 'use-debounce', goulha lia n3tik code b 'setTimeout' 3adi.
+
   const debouncedSearch = useDebouncedCallback((value: string) => {
     updateFilter("query", value);
   }, 500);
@@ -88,9 +86,13 @@ export function TransactionFilters() {
   const selectedCategory = searchParams.get("category") || "All Categories";
 
   return (
-    <div className="flex flex-col gap-3 w-full md:flex-row md:items-end md:gap-6">
+    <div className="flex flex-col gap-3 w-full xl:flex-row xl:flex-wrap xl:items-end xl:gap-6">
+      {/* Year Selector */}
+      <div className="w-full xl:w-auto">
+        <YearSelector currentYear={currentYear} />
+      </div>
       {/* Search Input */}
-      <div className="w-full md:w-[300px]">
+      <div className="w-full xl:w-[300px]">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
           <Input
@@ -98,15 +100,15 @@ export function TransactionFilters() {
             placeholder="Search by title..."
             value={searchQuery}
             onChange={handleSearchChange}
-            className="pl-10 bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus-visible:ring-zinc-600 w-full"
+            className="pl-10 bg-zinc-950 border-zinc-700 text-white placeholder:text-zinc-500 focus-visible:ring-zinc-600 hover:bg-zinc-900 hover:text-white w-full"
           />
         </div>
       </div>
 
       {/* Category Select */}
-      <div className="w-full md:w-[200px]">
+      <div className="w-full xl:w-[200px]">
         <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-          <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white focus:ring-zinc-600 w-full md:w-[200px]">
+          <SelectTrigger className="bg-zinc-950 border-zinc-700 text-zinc-500 focus:ring-zinc-600 hover:bg-zinc-900 hover:text-white w-full xl:w-[200px]">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent className="bg-zinc-800 border-zinc-700 text-white">
@@ -120,13 +122,14 @@ export function TransactionFilters() {
       </div>
 
       {/* Date Picker */}
-      <div className="flex gap-2 w-full md:w-auto">
+      <div className="flex gap-2 w-full xl:w-auto">
         <Popover>
+          
           <PopoverTrigger asChild>
             <Button
               variant="outline"
               className={cn(
-                "w-full md:w-[200px] justify-start text-left font-normal bg-zinc-950 border-zinc-700 text-white hover:bg-zinc-900 hover:text-white",
+                "w-full xl:w-[200px] justify-start text-left font-normal bg-zinc-950 border-zinc-700 text-white hover:bg-zinc-900 hover:text-white",
                 !selectedDate && "text-zinc-500"
               )}
             >
@@ -134,6 +137,7 @@ export function TransactionFilters() {
               {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
             </Button>
           </PopoverTrigger>
+
           <PopoverContent className="w-auto p-0 bg-zinc-900 border-zinc-700" align="start">
             <Calendar
               mode="single"

@@ -70,17 +70,17 @@ export default async function Home() {
 
   return (
     <DashboardLayout>
-      <div className="p-4 md:p-12 space-y-6 md:space-y-12">
+      <div className="p-4 lg:p-12 space-y-6 lg:space-y-12">
         {/* Header */}
-        <header className="mb-6 md:mb-16">
-          <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
+        <header className="mb-6 lg:mb-16">
+          <div className="flex flex-col items-start gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
+              <h1 className="text-3xl lg:text-5xl font-bold bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
                 Dashboard
               </h1>
-              <p className="text-zinc-400 mt-2 text-sm md:text-base">Welcome back! Here&apos;s your financial overview.</p>
+              <p className="text-zinc-400 mt-2 text-sm lg:text-base">Welcome back! Here&apos;s your financial overview.</p>
             </div>
-            <div className="w-full md:w-auto">
+            <div className="w-full lg:w-auto">
               <AddTransactionDialog />
             </div>
           </div>

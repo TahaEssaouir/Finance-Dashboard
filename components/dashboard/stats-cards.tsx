@@ -14,7 +14,7 @@ const currency = new Intl.NumberFormat("en-US", {
 export function StatsCards({ balance, income, expenses }: StatsCardsProps) {
   return (
     <div className="w-full max-w-sm mx-auto md:max-w-none">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 mb-8 lg:mb-12">
         {/* Total Balance */}
         <div className="rounded-3xl bg-zinc-900 p-4 md:p-6 border border-zinc-800">
         <div className="flex items-start justify-between mb-4 md:mb-6">

@@ -2,7 +2,6 @@ import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { AddTransactionDialog } from "@/components/transactions/add-transaction-dialog";
 import { TransactionActions } from "@/components/transactions/transaction-actions";
 import { TransactionFilters } from "@/components/transactions/transaction-filters";
-import { YearSelector } from "@/components/transactions/year-selector";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { redirect } from "next/navigation"; 
@@ -145,33 +144,26 @@ export default async function TransactionsPage({
     <DashboardLayout>
       <div className="p-4 md:p-12 space-y-3 md:space-y-6">
         {/* Header */}
-        <header className="mb-6 md:mb-16">
-          <div className="flex flex-col items-start gap-4 md:flex-row md:items-start md:justify-between">
-            <div>
-              <h1 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
-                Transactions History
-              </h1>
-              <p className="text-zinc-400 mt-2 text-sm md:text-base">
-                Track, filter, and manage your financial activity.
-              </p>
-            </div>
-            <div className="w-full md:w-auto">
-              <AddTransactionDialog />
-            </div>
+        <header className="mb-6 lg:mb-16">
+          <div className="flex items-center justify-between w-full mb-2">
+            <h1 className="text-2xl lg:text-4xl font-bold bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
+              Transactions History
+            </h1>
+            <AddTransactionDialog />
           </div>
+          <p className="text-zinc-400 text-sm lg:text-base">
+            Track, filter, and manage your financial activity.
+          </p>
         </header>
 
         {/* Filters */}
-        <section className="p-4 md:p-6 md:rounded-2xl md:border md:border-emerald-500/10 md:bg-emerald-950/40 md:backdrop-blur-xl md:shadow-2xl">
-          <p className="text-xs font-semibold text-emerald-500 uppercase tracking-wider mb-4 md:mb-4">
+        <section className="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-4 lg:p-8">
+          <p className="text-xs font-bold text-emerald-500 uppercase tracking-widest mb-4">
             Refine Results
           </p>
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:gap-6">
-            <div className="w-full md:w-auto">
-              <YearSelector currentYear={selectedYear} />
-            </div>
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:gap-6">
             <div className="flex-1">
-              <TransactionFilters />
+              <TransactionFilters currentYear={selectedYear} />
             </div>
           </div>
         </section>
@@ -183,18 +175,18 @@ export default async function TransactionsPage({
 
         {/* Transactions Grouped by Month */}
         {transactions.length === 0 ? (
-          <div className="rounded-3xl bg-zinc-900 border border-zinc-800 p-8 md:p-12 text-center">
-            <p className="text-zinc-400 text-base md:text-lg">No transactions yet. Start by adding one!</p>
+          <div className="rounded-3xl bg-zinc-900 border border-zinc-800 p-8 lg:p-12 text-center">
+            <p className="text-zinc-400 text-base lg:text-lg">No transactions yet. Start by adding one!</p>
           </div>
         ) : (
           <div className="space-y-8">
             {months.map((month) => (
               <div key={month}>
                 {/* Month Heading */}
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">{month}</h2>
+                <h2 className="text-2xl lg:text-3xl font-bold text-white mb-4">{month}</h2>
                 
                 {/* Desktop: Table View */}
-                <div className="hidden md:block rounded-3xl bg-zinc-900 border border-zinc-800 overflow-hidden">
+                <div className="hidden lg:block rounded-3xl bg-zinc-900 border border-zinc-800 overflow-hidden">
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
@@ -235,7 +227,9 @@ export default async function TransactionsPage({
                               {tx.category || "Other"}
                             </td>
                             <td className="px-6 py-4 text-sm">
-                              <TypeBadge type={tx.type} />
+                              <span className={cn("px-2 py-1 text-xs font-medium rounded-full", tx.type === "income" ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400")}>
+                                {tx.type === "income" ? "Income" : "Expense"}
+                              </span>
                             </td>
                             <td
                               className={cn(
@@ -259,24 +253,31 @@ export default async function TransactionsPage({
                 </div>
 
                 {/* Mobile: Card View */}
-                <div className="md:hidden grid gap-4">
+                <div className="lg:hidden grid gap-4">
                   {groupedTransactions[month].map((tx) => (
                     <div
                       key={tx.id}
-                      className="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800 flex items-start justify-between gap-3"
+                      className="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800 flex flex-col gap-3"
                     >
-                      {/* Left */}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-white font-medium truncate">{tx.title || "N/A"}</p>
-                        <p className="text-sm text-zinc-500 mt-1">{formatDate(tx.created_at)}</p>
+                      {/* Row 1: Header (Title & Actions) */}
+                      <div className="flex justify-between items-start">
+                        <p className="text-white font-medium truncate flex-1">{tx.title || "N/A"}</p>
+                        <TransactionActions transaction={tx} />
                       </div>
-                      {/* Right */}
-                      <div className="text-right">
-                        <p className={cn("text-sm font-semibold", tx.type === "income" ? "text-emerald-400" : "text-rose-400")}> 
+                      {/* Row 2: Financials (Amount & Type) */}
+                      <div className="flex justify-between items-center">
+                        <p className={cn("text-lg font-semibold", tx.type === "income" ? "text-emerald-400" : "text-rose-400")}>
                           {tx.type === "income" ? "+" : "-"}
                           {currency.format(Math.abs(Number(tx.amount || 0)))}
                         </p>
-                        <p className="text-xs text-zinc-400 mt-1">{tx.category || "Other"}</p>
+                        <span className={cn("px-2 py-1 text-xs font-medium rounded-full", tx.type === "income" ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400")}>
+                          {tx.type === "income" ? "Income" : "Expense"}
+                        </span>
+                      </div>
+                      {/* Row 3: Metadata (Date & Category) */}
+                      <div className="flex justify-between items-center text-sm text-zinc-500">
+                        <span>{formatDate(tx.created_at)}</span>
+                        <span>{tx.category || "Other"}</span>
                       </div>
                     </div>
                   ))}

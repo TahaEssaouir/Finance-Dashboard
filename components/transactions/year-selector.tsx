@@ -32,7 +32,7 @@ export function YearSelector({ currentYear }: YearSelectorProps) {
 
   return (
     <Select value={currentYear.toString()} onValueChange={handleYearChange}>
-      <SelectTrigger className="w-full md:w-[180px] bg-zinc-800 border-zinc-700 text-white">
+      <SelectTrigger className="w-full md:w-[180px] bg-zinc-950 border-zinc-700 text-white hover:bg-zinc-900 hover:text-white">
         <SelectValue />
       </SelectTrigger>
       <SelectContent className="bg-zinc-800 border-zinc-700">
