@@ -77,7 +77,7 @@ export function AddTransactionDialog() {
       <Button
         onClick={() => setOpen(true)}
         className={cn(
-          "flex items-center gap-2 px-6 py-2 rounded-xl font-medium transition-colors",
+          "flex items-center gap-2 w-auto h-9 px-3 text-sm rounded-xl font-medium transition-colors lg:h-11 lg:px-8 lg:text-base",
           "bg-emerald-600 text-white hover:bg-emerald-700"
         )}
       >
@@ -86,7 +86,7 @@ export function AddTransactionDialog() {
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="bg-zinc-900 border border-zinc-800 text-white sm:max-w-[500px]">
+        <DialogContent className="bg-zinc-900 border border-zinc-800 text-white w-[90%] max-w-[350px] sm:max-w-[425px] rounded-2xl md:rounded-xl p-4">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold">
               Add Transaction
@@ -96,7 +96,7 @@ export function AddTransactionDialog() {
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* Title */}
             <div className="space-y-2">
               <Label htmlFor="title" className="text-zinc-300">
@@ -110,7 +110,7 @@ export function AddTransactionDialog() {
                   setFormData({ ...formData, title: e.target.value })
                 }
                 className={cn(
-                  "bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500",
+                  "bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 h-9 text-sm",
                   errors.title && "border-rose-500"
                 )}
               />
@@ -134,7 +134,7 @@ export function AddTransactionDialog() {
                   setFormData({ ...formData, amount: e.target.value })
                 }
                 className={cn(
-                  "bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500",
+                  "bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 h-9 text-sm",
                   errors.amount && "border-rose-500"
                 )}
               />
@@ -151,7 +151,7 @@ export function AddTransactionDialog() {
               <Select value={formData.type} onValueChange={(value) =>
                 setFormData({ ...formData, type: value as "income" | "expense" })
               }>
-                <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white h-9 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-zinc-800 border-zinc-700">
@@ -176,7 +176,7 @@ export function AddTransactionDialog() {
               <Select value={formData.category} onValueChange={(value) =>
                 setFormData({ ...formData, category: value })
               }>
-                <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white h-9 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-zinc-800 border-zinc-700">
@@ -204,7 +204,7 @@ export function AddTransactionDialog() {
                 onChange={(e) =>
                   setFormData({ ...formData, date: e.target.value })
                 }
-                className="bg-zinc-800 border-zinc-700 text-white"
+                className="bg-zinc-800 border-zinc-700 text-white h-9 text-sm"
               />
               {errors.date && (
                 <p className="text-sm text-rose-500">{errors.date[0]}</p>
@@ -216,7 +216,7 @@ export function AddTransactionDialog() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="flex-1 bg-emerald-600 text-white hover:bg-emerald-700"
+                className="flex-1 bg-emerald-600 text-white hover:bg-emerald-700 h-9 text-sm"
               >
                 {loading ? "Adding..." : "Add "}
               </Button>
@@ -224,7 +224,7 @@ export function AddTransactionDialog() {
                 type="button"
                 onClick={() => setOpen(false)}
                 variant="outline"
-                className="flex-1 bg-zinc-800 text-zinc-300 border-zinc-700 hover:bg-zinc-700 hover:text-white"
+                className="flex-1 bg-zinc-800 text-zinc-300 border-zinc-700 hover:bg-zinc-700 hover:text-white h-9 text-sm"
               >
                 Cancel
               </Button>
