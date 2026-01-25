@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { LayoutDashboard, CreditCard, Settings, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
+import { UserButton } from '@clerk/nextjs';
 import { cn } from "@/lib/utils";
 
 const menuItems = [
@@ -113,8 +114,9 @@ export function Sidebar() {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-6">
+        <div className="px-6 py-6 flex items-center justify-between">
           <p className="text-sm text-zinc-500">© 2024 FinFlow</p>
+          <UserButton afterSignOutUrl="/" />
         </div>
       </div>
     </aside>

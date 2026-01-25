@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres.hlbaupovxwspyybhbtip:wnnxhqEWUNLzI8Wb@aws-1-eu-central-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+}
+
+model Transaction {
+  id        String   @id @default(uuid())
+  title     String
+  amount    Float
+  type      String   // "Income" or "Expense"
+  category  String
+  date      DateTime
+  userId    String
+  createdAt DateTime @default(now())
+}

@@ -2,17 +2,18 @@ import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { AddTransactionDialog } from "@/components/transactions/add-transaction-dialog";
 import { TransactionActions } from "@/components/transactions/transaction-actions";
 import { TransactionFilters } from "@/components/transactions/transaction-filters";
-import { supabase } from "@/lib/supabase";
+import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
-import { redirect } from "next/navigation"; 
+import { redirect } from "next/navigation";
+import { currentUser } from '@clerk/nextjs/server'; 
 
 type Transaction = {
-  id: number;
+  id: string;
   title: string | null;
   amount: number | null;
   type: "income" | "expense";
   category: string | null;
-  created_at: string | null;
+  date: Date | null;
 };
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -20,9 +21,8 @@ const currency = new Intl.NumberFormat("en-US", {
   currency: "USD",
 });
 
-function formatDate(dateString: string | null) {
-  if (!dateString) return "N/A";
-  const date = new Date(dateString);
+function formatDate(date: Date | null) {
+  if (!date) return "N/A";
   return date.toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
@@ -30,9 +30,8 @@ function formatDate(dateString: string | null) {
   });
 }
 
-function getMonthYear(dateString: string | null) {
-  if (!dateString) return "Unknown";
-  const date = new Date(dateString);
+function getMonthYear(date: Date | null) {
+  if (!date) return "Unknown";
   // 👇 Hna hya lmohimma: bddl "default" b "en-US"
   return date.toLocaleString("en-US", { month: "long", year: "numeric" });
 }
@@ -41,7 +40,7 @@ function groupTransactionsByMonth(transactions: Transaction[]) {
   const grouped: Record<string, Transaction[]> = {};
   
   transactions.forEach((tx) => {
-    const monthYear = getMonthYear(tx.created_at);
+    const monthYear = getMonthYear(tx.date);
     if (!grouped[monthYear]) {
       grouped[monthYear] = [];
     }
@@ -71,6 +70,11 @@ export default async function TransactionsPage({
 }: {
   searchParams: Promise<{ year?: string; query?: string; category?: string; date?: string }>;
 }) {
+  const user = await currentUser();
+  if (!user) redirect('/sign-in');
+
+  const userId = user.id;
+
   // Await searchParams
   const params = await searchParams;
   
@@ -106,37 +110,37 @@ export default async function TransactionsPage({
     selectedYear = parsedYear;
   }
 
-  const yearStart = `${selectedYear}-01-01`;
-  const yearEnd = `${selectedYear}-12-31`;
+  const yearStart = new Date(`${selectedYear}-01-01`);
+  const yearEnd = new Date(`${selectedYear}-12-31`);
 
-  // Build query with filters
-  let queryBuilder = supabase
-    .from("transactions")
-    .select("id, title, amount, type, category, created_at")
-    .gte("created_at", yearStart)
-    .lte("created_at", yearEnd);
-  
-  // Apply filters
+  // Build where clause
+  const where: any = {
+    userId,
+    date: {
+      gte: yearStart,
+      lte: yearEnd
+    }
+  };
+
   if (query) {
-    queryBuilder = queryBuilder.ilike("title", `%${query}%`);
+    where.title = { contains: query, mode: 'insensitive' };
   }
-  
+
   if (category && category !== "All Categories") {
-    queryBuilder = queryBuilder.eq("category", category);
+    where.category = category;
   }
-  
+
   if (date) {
-    queryBuilder = queryBuilder.gte("created_at", `${date}T00:00:00`)
-                               .lte("created_at", `${date}T23:59:59`);
-  }
-  
-  const { data, error } = await queryBuilder.order("created_at", { ascending: false });
-
-  if (error) {
-    throw new Error(error.message);
+    where.date = {
+      gte: new Date(`${date}T00:00:00`),
+      lte: new Date(`${date}T23:59:59`)
+    };
   }
 
-  const transactions: Transaction[] = data ?? [];
+  const transactions = await prisma.transaction.findMany({
+    where,
+    orderBy: { date: 'desc' }
+  });
   const groupedTransactions = groupTransactionsByMonth(transactions);
   const months = Object.keys(groupedTransactions);
 
@@ -222,7 +226,7 @@ export default async function TransactionsPage({
                             className="hover:bg-zinc-800/50 transition-colors"
                           >
                             <td className="px-6 py-4 text-sm text-zinc-300">
-                              {formatDate(tx.created_at)}
+                              {formatDate(tx.date)}
                             </td>
                             <td className="px-6 py-4 text-sm text-white font-medium">
                               {tx.title || "N/A"}
@@ -280,7 +284,7 @@ export default async function TransactionsPage({
                       </div>
                       {/* Row 3: Metadata (Date & Category) */}
                       <div className="flex justify-between items-center text-sm text-zinc-500">
-                        <span>{formatDate(tx.created_at)}</span>
+                        <span>{formatDate(tx.date)}</span>
                         <span>{tx.category || "Other"}</span>
                       </div>
                     </div>
