@@ -23,12 +23,12 @@ import { deleteTransaction } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 
 interface Transaction {
-  id: number;
+  id: string;
   title: string | null;
   amount: number | null;
   type: "income" | "expense";
   category: string | null;
-  created_at: string | null;
+  createdAt: Date | null;
 }
 
 interface TransactionActionsProps {

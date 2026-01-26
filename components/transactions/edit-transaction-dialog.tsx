@@ -31,12 +31,12 @@ const CATEGORIES = [
 ];
 
 interface Transaction {
-  id: number;
+  id: string;
   title: string | null;
   amount: number | null;
   type: "income" | "expense";
   category: string | null;
-  created_at: string | null;
+  createdAt: Date | null;
 }
 
 interface EditTransactionDialogProps {
@@ -56,7 +56,7 @@ export function EditTransactionDialog({
     amount: transaction.amount?.toString() || "",
     type: transaction.type,
     category: transaction.category || "Other",
-    date: transaction.created_at?.split("T")[0] || "",
+    date: transaction.createdAt?.toISOString().split("T")[0] || "",
   });
   const [errors, setErrors] = useState<Record<string, string[]>>({});
 

@@ -14,6 +14,7 @@ type Transaction = {
   type: "income" | "expense";
   category: string | null;
   date: Date | null;
+  createdAt: Date | null;
 };
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -137,10 +138,21 @@ export default async function TransactionsPage({
     };
   }
 
-  const transactions = await prisma.transaction.findMany({
+  const rawTransactions = await prisma.transaction.findMany({
     where,
     orderBy: { date: 'desc' }
   });
+
+  const transactions: Transaction[] = rawTransactions.map(tx => ({
+    id: tx.id,
+    title: tx.title,
+    amount: tx.amount,
+    type: tx.type.toLowerCase() as "income" | "expense",
+    category: tx.category,
+    date: tx.date,
+    createdAt: tx.createdAt
+  }));
+
   const groupedTransactions = groupTransactionsByMonth(transactions);
   const months = Object.keys(groupedTransactions);
 
