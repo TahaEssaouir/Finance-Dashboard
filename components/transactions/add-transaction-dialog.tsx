@@ -21,6 +21,7 @@ import {
 import { addTransaction } from "@/lib/actions";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { usePreferences } from "@/providers/PreferencesProvider";
 
 const CATEGORIES = [
   "Housing",

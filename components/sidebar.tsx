@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, CreditCard, Settings, TrendingUp } from "lucide-react";
+import { UserButton, useUser } from '@clerk/nextjs';
 import { cn } from "@/lib/utils";
 
 const menuItems = [
@@ -25,6 +26,7 @@ const menuItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { user } = useUser();
 
   return (
     <aside className="fixed left-0 top-0 z-40 h-screen w-80 bg-zinc-950 text-white">
@@ -64,9 +66,19 @@ export function Sidebar() {
           </ul>
         </nav>
 
-        {/* Footer */}
+        {/* User Profile Card */}
         <div className="px-6 py-6">
-          <p className="text-sm text-zinc-500">© 2024 FinFlow</p>
+          <div className="flex items-center gap-3">
+            <UserButton afterSignOutUrl="/" />
+            <div className="flex flex-col">
+              <span className="text-sm font-medium text-white truncate">
+                {user?.firstName} {user?.lastName}
+              </span>
+              <span className="text-xs text-zinc-400 truncate">
+                {user?.primaryEmailAddress?.emailAddress}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </aside>

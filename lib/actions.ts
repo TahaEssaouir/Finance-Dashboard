@@ -166,3 +166,29 @@ export async function deleteTransaction(id: string) {
     };
   }
 }
+
+export async function deleteUserTransactions() {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+
+    await prisma.transaction.deleteMany({
+      where: { userId },
+    });
+
+    revalidatePath("/");
+    revalidatePath("/transactions");
+
+    return {
+      success: true,
+      message: "All transactions deleted successfully",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
