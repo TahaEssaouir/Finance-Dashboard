@@ -57,6 +57,7 @@ export function AddTransactionDialog() {
     });
 
     if (result.success) {
+      alert("Transaction added successfully!");
       setFormData({
         title: "",
         amount: "",
@@ -67,6 +68,8 @@ export function AddTransactionDialog() {
       setOpen(false);
     } else if (result.errors) {
       setErrors(result.errors);
+    } else {
+      alert(result.message || "An error occurred");
     }
 
     setLoading(false);

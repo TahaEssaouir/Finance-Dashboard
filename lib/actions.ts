@@ -2,7 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { supabase } from "./supabase";
+import { prisma } from "./prisma";
+import { auth } from "@clerk/nextjs/server";
 
 const transactionSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -23,21 +24,23 @@ export type TransactionInput = z.infer<typeof transactionSchema>;
 
 export async function addTransaction(data: TransactionInput) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+
     const validated = transactionSchema.parse(data);
 
-    const { error } = await supabase.from("transactions").insert([
-      {
+    await prisma.transaction.create({
+      data: {
         title: validated.title,
         amount: validated.amount,
         type: validated.type,
         category: validated.category,
-        created_at: validated.date,
+        date: new Date(validated.date),
+        userId: userId,
       },
-    ]);
-
-    if (error) {
-      throw new Error(error.message);
-    }
+    });
 
     revalidatePath("/");
     revalidatePath("/transactions");
@@ -64,12 +67,17 @@ export async function addTransaction(data: TransactionInput) {
 
 export async function updateTransaction(formData: FormData) {
   try {
-    const id = formData.get("id");
-    const title = formData.get("title");
-    const amount = formData.get("amount");
-    const type = formData.get("type");
-    const category = formData.get("category");
-    const date = formData.get("date");
+    const { userId } = await auth();
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+
+    const id = formData.get("id") as string;
+    const title = formData.get("title") as string;
+    const amount = parseFloat(formData.get("amount") as string);
+    const type = formData.get("type") as "income" | "expense";
+    const category = formData.get("category") as string;
+    const date = formData.get("date") as string;
 
     if (!id) {
       return {
@@ -86,20 +94,19 @@ export async function updateTransaction(formData: FormData) {
       date,
     });
 
-    const { error } = await supabase
-      .from("transactions")
-      .update({
+    await prisma.transaction.update({
+      where: {
+        id: id,
+        userId: userId, // Ensure user owns the transaction
+      },
+      data: {
         title: validated.title,
         amount: validated.amount,
         type: validated.type,
         category: validated.category,
-        created_at: validated.date,
-      })
-      .eq("id", id);
-
-    if (error) {
-      throw new Error(error.message);
-    }
+        date: new Date(validated.date),
+      },
+    });
 
     revalidatePath("/");
     revalidatePath("/transactions");
@@ -126,6 +133,11 @@ export async function updateTransaction(formData: FormData) {
 
 export async function deleteTransaction(id: string) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+
     if (!id) {
       return {
         success: false,
@@ -133,11 +145,12 @@ export async function deleteTransaction(id: string) {
       };
     }
 
-    const { error } = await supabase.from("transactions").delete().eq("id", id);
-
-    if (error) {
-      throw new Error(error.message);
-    }
+    await prisma.transaction.delete({
+      where: {
+        id: id,
+        userId: userId, // Ensure user owns the transaction
+      },
+    });
 
     revalidatePath("/");
     revalidatePath("/transactions");
