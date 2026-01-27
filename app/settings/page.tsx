@@ -14,7 +14,7 @@ import { usePreferences } from "@/providers/PreferencesProvider";
 import { deleteUserTransactions } from "@/lib/actions";
 
 export default function SettingsPage() {
-  const { currency, setCurrency, theme, setTheme } = usePreferences();
+  const { language, setLanguage, theme, toggleTheme, t } = usePreferences();
 
   const handleExport = async () => {
     try {
@@ -70,27 +70,26 @@ export default function SettingsPage() {
       <div className="p-6 md:p-12">
         {/* Header */}
         <header className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Settings</h1>
-          <p className="text-lg text-zinc-400">Manage your account and preferences.</p>
+          <h1 className="text-4xl font-bold text-white mb-2">{t.preferencesTitle}</h1>
+          <p className="text-lg text-zinc-400">{t.settingsSubtitle}</p>
         </header>
 
         {/* Preferences Section */}
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-white mb-4">Preferences</h2>
+          <h2 className="text-2xl font-semibold text-white mb-4">{t.preferencesTitle}</h2>
           <div className="grid gap-6 md:grid-cols-2">
-            {/* Currency */}
+            {/* Language */}
             <div className="rounded-xl bg-zinc-800 p-6 border border-zinc-700">
-              <Label htmlFor="currency" className="text-sm font-medium text-zinc-300 mb-2 block">
-                Currency
+              <Label htmlFor="language" className="text-sm font-medium text-zinc-300 mb-2 block">
+                {t.languageLabel}
               </Label>
-              <Select value={currency} onValueChange={setCurrency}>
+              <Select value={language} onValueChange={setLanguage}>
                 <SelectTrigger className="bg-zinc-900 border-zinc-600 text-white">
-                  <SelectValue placeholder="Select currency" />
+                  <SelectValue placeholder="Select language" />
                 </SelectTrigger>
                 <SelectContent className="bg-zinc-900 border-zinc-600">
-                  <SelectItem value="USD">USD ($)</SelectItem>
-                  <SelectItem value="MAD">MAD (DH)</SelectItem>
-                  <SelectItem value="EUR">EUR (€)</SelectItem>
+                  <SelectItem value="en">English</SelectItem>
+                  <SelectItem value="fr">Français</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -98,7 +97,7 @@ export default function SettingsPage() {
             {/* Theme */}
             <div className="rounded-xl bg-zinc-800 p-6 border border-zinc-700">
               <Label className="text-sm font-medium text-zinc-300 mb-2 block">
-                Theme
+                {t.themeLabel}
               </Label>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-zinc-400">Light</span>
@@ -107,7 +106,7 @@ export default function SettingsPage() {
                     type="checkbox"
                     className="sr-only peer"
                     checked={theme === "dark"}
-                    onChange={() => setTheme(theme === "dark" ? "light" : "dark")}
+                    onChange={toggleTheme}
                   />
                   <div className="w-11 h-6 bg-zinc-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
                 </label>
@@ -119,27 +118,27 @@ export default function SettingsPage() {
 
         {/* Data Management Section */}
         <div>
-          <h2 className="text-2xl font-semibold text-white mb-4">Data Management</h2>
+          <h2 className="text-2xl font-semibold text-white mb-4">{t.dataManagementTitle}</h2>
           <div className="grid gap-6 md:grid-cols-2">
             {/* Export Data */}
             <div className="rounded-xl bg-zinc-800 p-6 border border-zinc-700">
-              <h3 className="text-lg font-medium text-white mb-2">Export Data</h3>
+              <h3 className="text-lg font-medium text-white mb-2">{t.exportTitle}</h3>
               <p className="text-sm text-zinc-400 mb-4">
-                Download all your transaction data as a CSV file.
+                {t.exportDescription}
               </p>
               <Button onClick={handleExport} className="bg-emerald-600 hover:bg-emerald-700 text-white">
-                Export to CSV
+                {t.exportButton}
               </Button>
             </div>
 
             {/* Delete All */}
             <div className="rounded-xl bg-zinc-800 p-6 border border-zinc-700">
-              <h3 className="text-lg font-medium text-white mb-2">Delete All Data</h3>
+              <h3 className="text-lg font-medium text-white mb-2">{t.deleteTitle}</h3>
               <p className="text-sm text-zinc-400 mb-4">
-                Permanently delete all your transactions. This action cannot be undone.
+                {t.deleteDescription}
               </p>
               <Button onClick={handleDeleteAll} variant="destructive" className="bg-red-600 hover:bg-red-700 text-white">
-                Delete All Data
+                {t.deleteButton}
               </Button>
             </div>
           </div>

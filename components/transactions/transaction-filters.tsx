@@ -22,6 +22,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useDebouncedCallback } from "use-debounce";
 import { YearSelector } from "./year-selector";
+import { usePreferences } from "@/providers/PreferencesProvider";
 
 const CATEGORIES = [
   "All Categories",
@@ -34,6 +35,7 @@ const CATEGORIES = [
 ];
 
 export function TransactionFilters({ currentYear }: { currentYear: number }) {
+  const { t } = usePreferences();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -97,7 +99,7 @@ export function TransactionFilters({ currentYear }: { currentYear: number }) {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
           <Input
             type="text"
-            placeholder="Search by title..."
+            placeholder={t.searchPlaceholder}
             value={searchQuery}
             onChange={handleSearchChange}
             className="pl-10 bg-zinc-950 border-zinc-700 text-white placeholder:text-zinc-500 focus-visible:ring-zinc-600 hover:bg-zinc-900 hover:text-white w-full"
@@ -134,7 +136,7 @@ export function TransactionFilters({ currentYear }: { currentYear: number }) {
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
+              {selectedDate ? format(selectedDate, "PPP") : t.pickDate}
             </Button>
           </PopoverTrigger>
 

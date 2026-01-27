@@ -13,7 +13,6 @@ import { usePreferences } from "@/providers/PreferencesProvider";
 const currencyFormatters = {
   USD: new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }),
   MAD: new Intl.NumberFormat("ar-MA", { style: "currency", currency: "MAD" }),
-  EUR: new Intl.NumberFormat("en-EU", { style: "currency", currency: "EUR" }),
 };
 
 export interface ExpenseChartDatum {
@@ -38,8 +37,9 @@ function TooltipContent({ payload, active, currency }: { payload?: any; active?:
 }
 
 export function ExpenseChart({ data }: ExpenseChartProps) {
-  const { currency } = usePreferences();
-  const formatter = currencyFormatters[currency as keyof typeof currencyFormatters];
+  const { language } = usePreferences();
+  const currency = language === 'fr' ? 'MAD' : 'USD';
+  const formatter = currencyFormatters[currency];
 
   return (
     <ResponsiveContainer width="100%" height={260}>

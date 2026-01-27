@@ -9,15 +9,11 @@ interface StatsCardsProps {
   expenses: number;
 }
 
-const currencyFormatters = {
-  USD: new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }),
-  MAD: new Intl.NumberFormat("ar-MA", { style: "currency", currency: "MAD" }),
-  EUR: new Intl.NumberFormat("en-EU", { style: "currency", currency: "EUR" }),
-};
+const currencyFormatters = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 
 export function StatsCards({ balance, income, expenses }: StatsCardsProps) {
-  const { currency } = usePreferences();
-  const formatter = currencyFormatters[currency];
+  const { t } = usePreferences();
+  const formatter = currencyFormatters;
 
   return (
     <div className="w-full max-w-sm mx-auto md:max-w-none">
@@ -25,7 +21,7 @@ export function StatsCards({ balance, income, expenses }: StatsCardsProps) {
         {/* Total Balance */}
         <div className="rounded-3xl bg-zinc-900 p-4 md:p-6 border border-zinc-800">
         <div className="flex items-start justify-between mb-4 md:mb-6">
-          <h3 className="text-sm md:text-lg text-zinc-400">Total Balance</h3>
+          <h3 className="text-sm md:text-lg text-zinc-400">{t.totalBalance}</h3>
           <div className="rounded-xl bg-emerald-950 p-3">
             <Wallet className="h-6 w-6 text-emerald-500" />
           </div>
@@ -36,7 +32,7 @@ export function StatsCards({ balance, income, expenses }: StatsCardsProps) {
       {/* Monthly Income */}
       <div className="rounded-3xl bg-zinc-900 p-4 md:p-6 border border-zinc-800">
         <div className="flex items-start justify-between mb-4 md:mb-6">
-          <h3 className="text-sm md:text-lg text-zinc-400">Monthly Income</h3>
+          <h3 className="text-sm md:text-lg text-zinc-400">{t.monthlyIncome}</h3>
           <div className="rounded-xl bg-emerald-950 p-3">
             <TrendingUp className="h-6 w-6 text-emerald-500" />
           </div>
@@ -47,7 +43,7 @@ export function StatsCards({ balance, income, expenses }: StatsCardsProps) {
       {/* Monthly Expenses */}
       <div className="rounded-3xl bg-zinc-900 p-4 md:p-6 border border-zinc-800">
         <div className="flex items-start justify-between mb-4 md:mb-6">
-          <h3 className="text-sm md:text-lg text-zinc-400">Monthly Expenses</h3>
+          <h3 className="text-sm md:text-lg text-zinc-400">{t.monthlyExpenses}</h3>
           <div className="rounded-xl bg-rose-950 p-3">
             <TrendingDown className="h-6 w-6 text-rose-500" />
           </div>

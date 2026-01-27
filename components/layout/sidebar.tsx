@@ -6,28 +6,30 @@ import { useState } from "react";
 import { LayoutDashboard, CreditCard, Settings, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { UserButton } from '@clerk/nextjs';
 import { cn } from "@/lib/utils";
-
-const menuItems = [
-  {
-    title: "Dashboard",
-    icon: LayoutDashboard,
-    href: "/",
-  },
-  {
-    title: "Transactions",
-    icon: CreditCard,
-    href: "/transactions",
-  },
-  {
-    title: "Settings",
-    icon: Settings,
-    href: "/settings",
-  },
-];
+import { usePreferences } from "@/providers/PreferencesProvider";
 
 export function Sidebar() {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { t } = usePreferences();
+
+  const menuItems = [
+    {
+      title: t.navDashboard,
+      icon: LayoutDashboard,
+      href: "/",
+    },
+    {
+      title: t.navTransactions,
+      icon: CreditCard,
+      href: "/transactions",
+    },
+    {
+      title: t.navSettings,
+      icon: Settings,
+      href: "/settings",
+    },
+  ];
 
   return (
     <aside className={cn(
@@ -60,61 +62,33 @@ export function Sidebar() {
         {/* Navigation */}
         <nav className="px-4">
           <ul className="space-y-2">
-            {menuItems
-              .filter((item) => item.title !== "Settings")
-              .map((item) => {
-                const Icon = item.icon;
-                const isActive = pathname === item.href;
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
 
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={cn(
-                        "flex items-center rounded-xl px-6 py-4 text-base font-medium transition-colors",
-                        isActive
-                          ? "bg-emerald-500/10 text-emerald-400"
-                          : "text-zinc-400 hover:bg-zinc-900/50 hover:text-white",
-                        isCollapsed ? "justify-center gap-0 px-0" : "gap-3"
-                      )}
-                    >
-                      <Icon className="h-5 w-5" />
-                      {!isCollapsed && <span>{item.title}</span>}
-                    </Link>
-                  </li>
-                );
-              })}
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "flex items-center rounded-xl px-6 py-4 text-base font-medium transition-colors",
+                      isActive
+                        ? "bg-emerald-500/10 text-emerald-400"
+                        : "text-zinc-400 hover:bg-zinc-900/50 hover:text-white",
+                      isCollapsed ? "justify-center gap-0 px-0" : "gap-3"
+                    )}
+                  >
+                    <Icon className="h-5 w-5" />
+                    {!isCollapsed && <span>{item.title}</span>}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
 
-        {/* Settings at bottom */}
-        <div className="mt-auto px-4">
-          {menuItems
-            .filter((item) => item.title === "Settings")
-            .map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "mb-4 flex items-center rounded-xl px-6 py-4 text-base font-medium transition-colors",
-                    isActive
-                      ? "bg-emerald-500/10 text-emerald-400"
-                      : "text-zinc-400 hover:bg-zinc-900/50 hover:text-white",
-                    isCollapsed ? "justify-center gap-0 px-0" : "gap-3"
-                  )}
-                >
-                  <Icon className="h-5 w-5" />
-                  {!isCollapsed && <span>{item.title}</span>}
-                </Link>
-              );
-            })}
-        </div>
-
         {/* Footer */}
-        <div className="px-6 py-6 flex items-center justify-between">
+        <div className="mt-auto px-6 py-6 flex items-center justify-between">
           <p className="text-sm text-zinc-500">© 2024 FinFlow</p>
           <UserButton afterSignOutUrl="/" />
         </div>

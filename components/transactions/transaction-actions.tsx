@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { EditTransactionDialog } from "./edit-transaction-dialog";
 import { deleteTransaction } from "@/lib/actions";
 import { cn } from "@/lib/utils";
+import { usePreferences } from "@/providers/PreferencesProvider";
 
 interface Transaction {
   id: string;
@@ -39,6 +40,7 @@ export function TransactionActions({ transaction }: TransactionActionsProps) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const { t } = usePreferences();
 
   async function handleDelete() {
     setDeleting(true);
@@ -73,7 +75,7 @@ export function TransactionActions({ transaction }: TransactionActionsProps) {
             )}
           >
             <Edit2 className="h-4 text-blue-400 w-4" />
-            <span>Edit</span>
+            <span>{t.actionEdit}</span>
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setDeleteOpen(true)}
@@ -83,7 +85,7 @@ export function TransactionActions({ transaction }: TransactionActionsProps) {
             )}
           >
             <Trash2 className="h-4 text-rose-400 w-4" />
-            <span>Delete</span>
+            <span>{t.actionDelete}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -100,25 +102,24 @@ export function TransactionActions({ transaction }: TransactionActionsProps) {
         <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-xl">
-              Delete Transaction?
+              {t.deleteDialogTitle}
             </AlertDialogTitle>
             <AlertDialogDescription className="text-zinc-400">
-              Are you sure you want to delete this transaction? This action
-              cannot be undone.
+              {t.deleteDialogDesc}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="mt-4 p-4 bg-zinc-800/50 rounded-lg text-sm">
             <p className="text-zinc-300">
-              <span className="text-zinc-400">Title:</span> {transaction.title}
+              <span className="text-zinc-400">{t.deleteDialogTitleLabel}</span> {transaction.title}
             </p>
             <p className="text-zinc-300 mt-1">
-              <span className="text-zinc-400">Amount:</span> $
+              <span className="text-zinc-400">{t.deleteDialogAmountLabel}</span> $
               {transaction.amount}
             </p>
           </div>
           <div className="flex gap-3 justify-end pt-4">
             <AlertDialogCancel className="bg-zinc-800 text-zinc-300 border-zinc-700 hover:bg-zinc-700 hover:text-white">
-              Cancel
+              {t.deleteDialogCancel}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
@@ -128,7 +129,7 @@ export function TransactionActions({ transaction }: TransactionActionsProps) {
                 deleting && "opacity-50 cursor-not-allowed"
               )}
             >
-              {deleting ? "Deleting..." : "Delete"}
+              {deleting ? t.deleteDialogDeleting : t.deleteDialogConfirm}
             </AlertDialogAction>
           </div>
         </AlertDialogContent>

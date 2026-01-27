@@ -33,6 +33,7 @@ const CATEGORIES = [
 ];
 
 export function AddTransactionDialog() {
+  const { t } = usePreferences();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -83,17 +84,17 @@ export function AddTransactionDialog() {
         )}
       >
         <Plus className="h-5 w-5" />
-        Add Transaction
+        {t.addTransaction}
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="bg-zinc-900 border border-zinc-800 text-white w-[90%] max-w-[350px] sm:max-w-[425px] rounded-2xl md:rounded-xl p-4">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold">
-              Add Transaction
+              {t.modalTitle}
             </DialogTitle>
             <DialogDescription className="text-zinc-400">
-              Create a new income or expense transaction
+              {t.modalDesc}
             </DialogDescription>
           </DialogHeader>
 
@@ -101,11 +102,11 @@ export function AddTransactionDialog() {
             {/* Title */}
             <div className="space-y-2">
               <Label htmlFor="title" className="text-zinc-300">
-                Title
+                {t.labelTitle}
               </Label>
               <Input
                 id="title"
-                placeholder="Transaction name"
+                placeholder={t.placeholderTitle}
                 value={formData.title}
                 onChange={(e) =>
                   setFormData({ ...formData, title: e.target.value })
@@ -123,7 +124,7 @@ export function AddTransactionDialog() {
             {/* Amount */}
             <div className="space-y-2">
               <Label htmlFor="amount" className="text-zinc-300">
-                Amount
+                {t.labelAmount}
               </Label>
               <Input
                 id="amount"
@@ -147,7 +148,7 @@ export function AddTransactionDialog() {
             {/* Type */}
             <div className="space-y-2">
               <Label htmlFor="type" className="text-zinc-300">
-                Type
+                {t.labelType}
               </Label>
               <Select value={formData.type} onValueChange={(value) =>
                 setFormData({ ...formData, type: value as "income" | "expense" })
@@ -157,10 +158,10 @@ export function AddTransactionDialog() {
                 </SelectTrigger>
                 <SelectContent className="bg-zinc-800 border-zinc-700">
                   <SelectItem value="income" className="text-emerald-500 hover:text-emerald-400 focus:bg-zinc-700">
-                    Income
+                    {t.typeIncome}
                   </SelectItem>
                   <SelectItem value="expense" className="text-rose-500 hover:text-rose-400 focus:bg-zinc-700">
-                    Expense
+                    {t.typeExpense}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -172,7 +173,7 @@ export function AddTransactionDialog() {
             {/* Category */}
             <div className="space-y-2">
               <Label htmlFor="category" className="text-zinc-300">
-                Category
+                {t.labelCategory}
               </Label>
               <Select value={formData.category} onValueChange={(value) =>
                 setFormData({ ...formData, category: value })
@@ -196,7 +197,7 @@ export function AddTransactionDialog() {
             {/* Date */}
             <div className="space-y-2">
               <Label htmlFor="date" className="text-zinc-300">
-                Date
+                {t.labelDate}
               </Label>
               <Input
                 id="date"
@@ -219,7 +220,7 @@ export function AddTransactionDialog() {
                 disabled={loading}
                 className="flex-1 bg-emerald-600 text-white hover:bg-emerald-700 h-9 text-sm"
               >
-                {loading ? "Adding..." : "Add "}
+                {loading ? t.addingText : t.btnAdd}
               </Button>
               <Button
                 type="button"
@@ -227,7 +228,7 @@ export function AddTransactionDialog() {
                 variant="outline"
                 className="flex-1 bg-zinc-800 text-zinc-300 border-zinc-700 hover:bg-zinc-700 hover:text-white h-9 text-sm"
               >
-                Cancel
+                {t.btnCancel}
               </Button>
             </div>
           </form>

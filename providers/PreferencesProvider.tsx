@@ -1,63 +1,70 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { Language, getTranslation } from "@/lib/translations";
 
-type Currency = "USD" | "MAD" | "EUR";
 type Theme = "light" | "dark";
 
 interface PreferencesContextType {
-  currency: Currency;
-  setCurrency: (currency: Currency) => void;
+  language: Language;
+  setLanguage: (language: Language) => void;
   theme: Theme;
-  setTheme: (theme: Theme) => void;
+  toggleTheme: () => void;
+  t: ReturnType<typeof getTranslation>;
 }
 
 const PreferencesContext = createContext<PreferencesContextType | undefined>(undefined);
 
 export function PreferencesProvider({ children }: { children: ReactNode }) {
-  const [currency, setCurrencyState] = useState<Currency>("USD");
+  const [language, setLanguageState] = useState<Language>("en");
   const [theme, setThemeState] = useState<Theme>("dark");
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // Load from localStorage on mount
   useEffect(() => {
-    const storedCurrency = localStorage.getItem("currency") as Currency;
+    const storedLanguage = localStorage.getItem("language") as Language;
     const storedTheme = localStorage.getItem("theme") as Theme;
-    if (storedCurrency && ["USD", "MAD", "EUR"].includes(storedCurrency)) {
-      setCurrencyState(storedCurrency);
+    if (storedLanguage && ["en", "fr"].includes(storedLanguage)) {
+      setLanguageState(storedLanguage);
     }
     if (storedTheme && ["light", "dark"].includes(storedTheme)) {
       setThemeState(storedTheme);
+    } else {
+      // Apply default theme immediately
+      const root = window.document.documentElement;
+      root.classList.remove("light", "dark");
+      root.classList.add("dark");
+      localStorage.setItem("theme", "dark");
     }
+    setIsLoaded(true);
   }, []);
 
-  // Save to localStorage and apply theme
-  const setCurrency = (newCurrency: Currency) => {
-    setCurrencyState(newCurrency);
-    localStorage.setItem("currency", newCurrency);
-  };
-
-  const setTheme = (newTheme: Theme) => {
-    setThemeState(newTheme);
-    localStorage.setItem("theme", newTheme);
-    // Apply theme to document
-    if (newTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  };
-
-  // Apply initial theme
+  // Apply theme to document when theme changes
   useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    const root = window.document.documentElement;
+    // Remove both potential classes first to be safe
+    root.classList.remove("light", "dark");
+    // Add the selected theme class
+    root.classList.add(theme);
+    // Persist to localStorage
+    localStorage.setItem("theme", theme);
   }, [theme]);
 
+  const setLanguage = (newLanguage: Language) => {
+    setLanguageState(newLanguage);
+    localStorage.setItem("language", newLanguage);
+  };
+
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setThemeState(newTheme);
+    localStorage.setItem("theme", newTheme);
+  };
+
+  const t = getTranslation(language);
+
   return (
-    <PreferencesContext.Provider value={{ currency, setCurrency, theme, setTheme }}>
+    <PreferencesContext.Provider value={{ language, setLanguage, theme, toggleTheme, t }}>
       {children}
     </PreferencesContext.Provider>
   );
