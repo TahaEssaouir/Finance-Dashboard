@@ -5,6 +5,7 @@ import { ExpenseChart } from "@/components/dashboard/expense-chart";
 import { StatsCards } from "@/components/dashboard/stats-cards";
 import { AddTransactionDialog } from "@/components/transactions/add-transaction-dialog";
 import { usePreferences } from "@/providers/PreferencesProvider";
+import { getBaseUrl } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 type Transaction = {
@@ -25,7 +26,8 @@ export default function Home() {
 
   useEffect(() => {
     // Fetch data
-    fetch('/api/transactions')
+    const baseUrl = getBaseUrl();
+    fetch(`${baseUrl}/api/transactions`)
       .then(res => res.json())
       .then(transactions => {
         const incomeTotal = transactions.reduce((sum: number, tx: any) => {
@@ -62,6 +64,17 @@ export default function Home() {
           expenses: expenseTotal,
           chartData,
           hasTransactions: transactions.length > 0,
+        });
+      })
+      .catch((error) => {
+        console.error('Error fetching transactions:', error);
+        // Set default empty data on error to prevent infinite loading
+        setData({
+          balance: 0,
+          income: 0,
+          expenses: 0,
+          chartData: [],
+          hasTransactions: false,
         });
       });
   }, []);

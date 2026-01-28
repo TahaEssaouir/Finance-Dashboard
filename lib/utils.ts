@@ -6,6 +6,27 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
+ * Get the base URL for API calls
+ * - Browser: Returns empty string to use relative paths
+ * - Vercel: Returns https://{VERCEL_URL}
+ * - Local: Returns http://localhost:3000
+ */
+export function getBaseUrl(): string {
+  // Browser should use relative paths
+  if (typeof window !== "undefined") {
+    return "";
+  }
+  
+  // Vercel deployment
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  
+  // Local development
+  return "http://localhost:3000";
+}
+
+/**
  * Format currency amount with optional privacy mode
  * @param amount The amount to format
  * @param currency Currency code (e.g., 'USD', 'MAD')
