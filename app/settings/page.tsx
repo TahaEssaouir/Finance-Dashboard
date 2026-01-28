@@ -11,7 +11,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { usePreferences } from "@/providers/PreferencesProvider";
-import { getBaseUrl } from "@/lib/utils";
 import { deleteUserTransactions } from "@/lib/actions";
 
 export default function SettingsPage() {
@@ -19,8 +18,7 @@ export default function SettingsPage() {
 
   const handleExport = async () => {
     try {
-      const baseUrl = getBaseUrl();
-      const response = await fetch(`${baseUrl}/api/transactions`);
+      const response = await fetch('/api/transactions');
       if (!response.ok) throw new Error('Failed to fetch transactions');
       const transactions = await response.json();
 

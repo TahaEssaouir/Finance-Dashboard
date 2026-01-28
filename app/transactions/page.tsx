@@ -8,7 +8,6 @@ import { TransactionFilters } from "@/components/transactions/transaction-filter
 import { usePreferences } from "@/providers/PreferencesProvider";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/utils";
-import { getBaseUrl } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
@@ -68,9 +67,8 @@ function TransactionsContent() {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const baseUrl = getBaseUrl();
         const params = new URLSearchParams(searchParams.toString());
-        const response = await fetch(`${baseUrl}/api/transactions?${params}`);
+        const response = await fetch(`/api/transactions?${params}`);
         if (response.ok) {
           const data = await response.json();
           const formattedTransactions: Transaction[] = data.map((tx: any) => ({
@@ -86,8 +84,6 @@ function TransactionsContent() {
         }
       } catch (error) {
         console.error('Error fetching transactions:', error);
-        // Set empty array on error to prevent infinite loading
-        setTransactions([]);
       } finally {
         setLoading(false);
       }
