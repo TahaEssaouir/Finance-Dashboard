@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { usePreferences } from "@/providers/PreferencesProvider";
+import { fetchWithTimeout } from "@/lib/api-client";
 import { deleteUserTransactions } from "@/lib/actions";
 
 export default function SettingsPage() {
@@ -18,7 +19,7 @@ export default function SettingsPage() {
 
   const handleExport = async () => {
     try {
-      const response = await fetch('/api/transactions');
+      const response = await fetchWithTimeout('/api/transactions', { timeout: 10000 });
       if (!response.ok) throw new Error('Failed to fetch transactions');
       const transactions = await response.json();
 
@@ -48,6 +49,7 @@ export default function SettingsPage() {
 
       alert('Transactions exported successfully!');
     } catch (error) {
+      console.error('Export error:', error);
       alert('Failed to export transactions');
     }
   };

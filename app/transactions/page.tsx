@@ -8,6 +8,7 @@ import { TransactionFilters } from "@/components/transactions/transaction-filter
 import { usePreferences } from "@/providers/PreferencesProvider";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/utils";
+import { fetchWithTimeout } from "@/lib/api-client";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
@@ -68,7 +69,7 @@ function TransactionsContent() {
     const fetchTransactions = async () => {
       try {
         const params = new URLSearchParams(searchParams.toString());
-        const response = await fetch(`/api/transactions?${params}`);
+        const response = await fetchWithTimeout(`/api/transactions?${params}`, { timeout: 10000 });
         if (response.ok) {
           const data = await response.json();
           const formattedTransactions: Transaction[] = data.map((tx: any) => ({
@@ -81,9 +82,13 @@ function TransactionsContent() {
             createdAt: tx.createdAt ? new Date(tx.createdAt) : null,
           }));
           setTransactions(formattedTransactions);
+        } else {
+          console.error('Failed to fetch transactions:', response.status);
         }
       } catch (error) {
         console.error('Error fetching transactions:', error);
+        // Set empty state instead of hanging on loading
+        setTransactions([]);
       } finally {
         setLoading(false);
       }
