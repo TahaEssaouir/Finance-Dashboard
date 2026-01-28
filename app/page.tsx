@@ -5,7 +5,6 @@ import { ExpenseChart } from "@/components/dashboard/expense-chart";
 import { StatsCards } from "@/components/dashboard/stats-cards";
 import { AddTransactionDialog } from "@/components/transactions/add-transaction-dialog";
 import { usePreferences } from "@/providers/PreferencesProvider";
-import { fetchWithTimeout } from "@/lib/api-client";
 import { useEffect, useState } from "react";
 
 type Transaction = {
@@ -25,15 +24,10 @@ export default function Home() {
   } | null>(null);
 
   useEffect(() => {
-    // Fetch data with error handling
-    const fetchTransactions = async () => {
-      try {
-        const response = await fetchWithTimeout('/api/transactions', { timeout: 10000 });
-        if (!response.ok) {
-          throw new Error(`API error: ${response.status}`);
-        }
-        const transactions = await response.json();
-
+    // Fetch data
+    fetch('/api/transactions')
+      .then(res => res.json())
+      .then(transactions => {
         const incomeTotal = transactions.reduce((sum: number, tx: any) => {
           if (tx.type === "income") {
             return sum + Number(tx.amount || 0);
@@ -69,20 +63,7 @@ export default function Home() {
           chartData,
           hasTransactions: transactions.length > 0,
         });
-      } catch (error) {
-        console.error('Error fetching transactions:', error);
-        // Set empty data state instead of leaving it in loading state
-        setData({
-          balance: 0,
-          income: 0,
-          expenses: 0,
-          chartData: [],
-          hasTransactions: false,
-        });
-      }
-    };
-
-    fetchTransactions();
+      });
   }, []);
 
   if (!data) {

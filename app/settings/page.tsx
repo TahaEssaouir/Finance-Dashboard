@@ -11,7 +11,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { usePreferences } from "@/providers/PreferencesProvider";
-import { fetchWithTimeout } from "@/lib/api-client";
 import { deleteUserTransactions } from "@/lib/actions";
 
 export default function SettingsPage() {
@@ -19,7 +18,7 @@ export default function SettingsPage() {
 
   const handleExport = async () => {
     try {
-      const response = await fetchWithTimeout('/api/transactions', { timeout: 10000 });
+      const response = await fetch('/api/transactions');
       if (!response.ok) throw new Error('Failed to fetch transactions');
       const transactions = await response.json();
 
@@ -49,7 +48,6 @@ export default function SettingsPage() {
 
       alert('Transactions exported successfully!');
     } catch (error) {
-      console.error('Export error:', error);
       alert('Failed to export transactions');
     }
   };
@@ -69,7 +67,7 @@ export default function SettingsPage() {
 
   return (
     <DashboardLayout>
-      <div className="p-6 md:p-12 max-w-4xl mx-auto">
+      <div className="p-6 md:p-12">
         {/* Header */}
         <header className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">{t.preferencesTitle}</h1>
