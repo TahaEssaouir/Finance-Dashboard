@@ -14,7 +14,7 @@ import { usePreferences } from "@/providers/PreferencesProvider";
 import { deleteUserTransactions } from "@/lib/actions";
 
 export default function SettingsPage() {
-  const { language, setLanguage, theme, toggleTheme, t } = usePreferences();
+  const { language, setLanguage, privacyMode, togglePrivacyMode, t } = usePreferences();
 
   const handleExport = async () => {
     try {
@@ -97,20 +97,20 @@ export default function SettingsPage() {
             {/* Theme */}
             <div className="rounded-xl bg-zinc-800 p-6 border border-zinc-700">
               <Label className="text-sm font-medium text-zinc-300 mb-2 block">
-                {t.themeLabel}
+                {t.privacyLabel}
               </Label>
+              <p className="text-sm text-zinc-400 mb-4">{t.privacyDesc}</p>
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-zinc-400">Light</span>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
                     className="sr-only peer"
-                    checked={theme === "dark"}
-                    onChange={toggleTheme}
+                    checked={privacyMode}
+                    onChange={togglePrivacyMode}
                   />
                   <div className="w-11 h-6 bg-zinc-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
                 </label>
-                <span className="text-sm text-zinc-400">Dark</span>
+                <span className="text-sm text-zinc-400">{privacyMode ? "On" : "Off"}</span>
               </div>
             </div>
           </div>

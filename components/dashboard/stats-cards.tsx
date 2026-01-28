@@ -2,6 +2,7 @@
 
 import { Wallet, TrendingUp, TrendingDown } from "lucide-react";
 import { usePreferences } from "@/providers/PreferencesProvider";
+import { formatCurrency } from "@/lib/utils";
 
 interface StatsCardsProps {
   balance: number;
@@ -9,11 +10,8 @@ interface StatsCardsProps {
   expenses: number;
 }
 
-const currencyFormatters = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
-
 export function StatsCards({ balance, income, expenses }: StatsCardsProps) {
-  const { t } = usePreferences();
-  const formatter = currencyFormatters;
+  const { t, privacyMode } = usePreferences();
 
   return (
     <div className="w-full max-w-sm mx-auto md:max-w-none">
@@ -26,7 +24,7 @@ export function StatsCards({ balance, income, expenses }: StatsCardsProps) {
             <Wallet className="h-6 w-6 text-emerald-500" />
           </div>
         </div>
-        <p className="text-2xl md:text-4xl font-bold text-white">{formatter.format(balance)}</p>
+        <p className="text-2xl md:text-4xl font-bold text-white">{formatCurrency(balance, 'USD', 'en-US', privacyMode)}</p>
       </div>
 
       {/* Monthly Income */}
@@ -37,7 +35,7 @@ export function StatsCards({ balance, income, expenses }: StatsCardsProps) {
             <TrendingUp className="h-6 w-6 text-emerald-500" />
           </div>
         </div>
-        <p className="text-2xl md:text-4xl font-bold text-emerald-500">{formatter.format(income)}</p>
+        <p className="text-2xl md:text-4xl font-bold text-emerald-500">{formatCurrency(income, 'USD', 'en-US', privacyMode)}</p>
       </div>
 
       {/* Monthly Expenses */}
@@ -48,7 +46,7 @@ export function StatsCards({ balance, income, expenses }: StatsCardsProps) {
             <TrendingDown className="h-6 w-6 text-rose-500" />
           </div>
         </div>
-        <p className="text-2xl md:text-4xl font-bold text-rose-500">{formatter.format(expenses)}</p>
+        <p className="text-2xl md:text-4xl font-bold text-rose-500">{formatCurrency(expenses, 'USD', 'en-US', privacyMode)}</p>
       </div>
       </div>
     </div>

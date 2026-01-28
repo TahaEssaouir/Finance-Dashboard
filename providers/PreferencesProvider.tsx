@@ -3,13 +3,11 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { Language, getTranslation } from "@/lib/translations";
 
-type Theme = "light" | "dark";
-
 interface PreferencesContextType {
   language: Language;
   setLanguage: (language: Language) => void;
-  theme: Theme;
-  toggleTheme: () => void;
+  privacyMode: boolean;
+  togglePrivacyMode: () => void;
   t: ReturnType<typeof getTranslation>;
 }
 
@@ -17,54 +15,40 @@ const PreferencesContext = createContext<PreferencesContextType | undefined>(und
 
 export function PreferencesProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>("en");
-  const [theme, setThemeState] = useState<Theme>("dark");
+  const [privacyMode, setPrivacyModeState] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Load from localStorage on mount
   useEffect(() => {
     const storedLanguage = localStorage.getItem("language") as Language;
-    const storedTheme = localStorage.getItem("theme") as Theme;
+    const storedPrivacyMode = localStorage.getItem("privacyMode");
+    
     if (storedLanguage && ["en", "fr"].includes(storedLanguage)) {
       setLanguageState(storedLanguage);
     }
-    if (storedTheme && ["light", "dark"].includes(storedTheme)) {
-      setThemeState(storedTheme);
-    } else {
-      // Apply default theme immediately
-      const root = window.document.documentElement;
-      root.classList.remove("light", "dark");
-      root.classList.add("dark");
-      localStorage.setItem("theme", "dark");
+    
+    if (storedPrivacyMode === "true") {
+      setPrivacyModeState(true);
     }
+    
     setIsLoaded(true);
   }, []);
-
-  // Apply theme to document when theme changes
-  useEffect(() => {
-    const root = window.document.documentElement;
-    // Remove both potential classes first to be safe
-    root.classList.remove("light", "dark");
-    // Add the selected theme class
-    root.classList.add(theme);
-    // Persist to localStorage
-    localStorage.setItem("theme", theme);
-  }, [theme]);
 
   const setLanguage = (newLanguage: Language) => {
     setLanguageState(newLanguage);
     localStorage.setItem("language", newLanguage);
   };
 
-  const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
-    setThemeState(newTheme);
-    localStorage.setItem("theme", newTheme);
+  const togglePrivacyMode = () => {
+    const newPrivacyMode = !privacyMode;
+    setPrivacyModeState(newPrivacyMode);
+    localStorage.setItem("privacyMode", newPrivacyMode ? "true" : "false");
   };
 
   const t = getTranslation(language);
 
   return (
-    <PreferencesContext.Provider value={{ language, setLanguage, theme, toggleTheme, t }}>
+    <PreferencesContext.Provider value={{ language, setLanguage, privacyMode, togglePrivacyMode, t }}>
       {children}
     </PreferencesContext.Provider>
   );

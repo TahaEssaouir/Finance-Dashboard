@@ -6,6 +6,7 @@ import { TransactionActions } from "@/components/transactions/transaction-action
 import { TransactionFilters } from "@/components/transactions/transaction-filters";
 import { usePreferences } from "@/providers/PreferencesProvider";
 import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
@@ -20,7 +21,7 @@ type Transaction = {
 };
 
 export default function TransactionsPage() {
-  const { language, t } = usePreferences();
+  const { language, t, privacyMode } = usePreferences();
   const searchParams = useSearchParams();
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -204,7 +205,7 @@ export default function TransactionsPage() {
                               )}
                             >
                               {tx.type === "income" ? "+" : "-"}
-                              {currency.format(Math.abs(Number(tx.amount || 0)))}
+                              {formatCurrency(Math.abs(Number(tx.amount || 0)), currencyCode, locale, privacyMode)}
                             </td>
                             <td className="px-6 py-4 text-right">
                               <TransactionActions transaction={tx} />
@@ -232,7 +233,7 @@ export default function TransactionsPage() {
                       <div className="flex justify-between items-center">
                         <p className={cn("text-lg font-semibold", tx.type === "income" ? "text-emerald-400" : "text-rose-400")}>
                           {tx.type === "income" ? "+" : "-"}
-                          {currency.format(Math.abs(Number(tx.amount || 0)))}
+                          {formatCurrency(Math.abs(Number(tx.amount || 0)), currencyCode, locale, privacyMode)}
                         </p>
                         <span className={cn("px-2 py-1 text-xs font-medium rounded-full", tx.type === "income" ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400")}>
                           {tx.type === "income" ? t.typeIncome : t.typeExpense}

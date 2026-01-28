@@ -39,7 +39,8 @@ export const translations = {
     // Settings Page
     preferencesTitle: "Preferences",
     languageLabel: "Language",
-    themeLabel: "Theme",
+    privacyLabel: "Privacy Mode",
+    privacyDesc: "Hide account balances and transaction amounts.",
     dataManagementTitle: "Data Management",
     exportButton: "Export to CSV",
     deleteButton: "Delete All Data",
@@ -111,7 +112,8 @@ export const translations = {
     // Settings Page
     preferencesTitle: "Préférences",
     languageLabel: "Langue",
-    themeLabel: "Thème",
+    privacyLabel: "Mode Discret",
+    privacyDesc: "Masquer les soldes et les montants des transactions.",
     dataManagementTitle: "Gestion des Données",
     exportButton: "Exporter en CSV",
     deleteButton: "Supprimer Toutes les Données",
