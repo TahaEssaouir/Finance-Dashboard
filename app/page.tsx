@@ -28,11 +28,6 @@ export default function Home() {
     fetch('/api/transactions')
       .then(res => res.json())
       .then(transactions => {
-        // Ensure transactions is an array, even if API returns error
-        if (!Array.isArray(transactions)) {
-          transactions = [];
-        }
-
         const incomeTotal = transactions.reduce((sum: number, tx: any) => {
           if (tx.type === "income") {
             return sum + Number(tx.amount || 0);
@@ -67,17 +62,6 @@ export default function Home() {
           expenses: expenseTotal,
           chartData,
           hasTransactions: transactions.length > 0,
-        });
-      })
-      .catch(error => {
-        // Handle fetch or JSON parsing errors
-        console.error('Error fetching transactions:', error);
-        setData({
-          balance: 0,
-          income: 0,
-          expenses: 0,
-          chartData: [],
-          hasTransactions: false,
         });
       });
   }, []);
