@@ -69,8 +69,12 @@ function TransactionsContent() {
       try {
         const params = new URLSearchParams(searchParams.toString());
         const response = await fetch(`/api/transactions?${params}`);
-        if (response.ok) {
-          const data = await response.json();
+        const data = await response.json();
+        
+        // Ensure data is an array, even if API returns error
+        if (!Array.isArray(data)) {
+          setTransactions([]);
+        } else {
           const formattedTransactions: Transaction[] = data.map((tx: any) => ({
             id: tx.id,
             title: tx.title,
@@ -84,6 +88,7 @@ function TransactionsContent() {
         }
       } catch (error) {
         console.error('Error fetching transactions:', error);
+        setTransactions([]);
       } finally {
         setLoading(false);
       }
