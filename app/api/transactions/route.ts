@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@clerk/nextjs/server';
+import { unstable_noStore as noStore } from 'next/cache';
 
 export async function GET(request: NextRequest) {
+  noStore(); // Opt-out of static caching completely
   try {
     const { userId } = await auth();
     if (!userId) {

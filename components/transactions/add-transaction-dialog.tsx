@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -18,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { addTransaction } from "@/lib/actions";
+import { addTransaction } from "@/app/actions/add-transaction";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePreferences } from "@/providers/PreferencesProvider";
@@ -36,6 +37,8 @@ export function AddTransactionDialog() {
   const { t } = usePreferences();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     title: "",
     amount: "",
@@ -66,7 +69,10 @@ export function AddTransactionDialog() {
         category: "Other",
         date: new Date().toISOString().split("T")[0],
       });
-      setOpen(false);
+      startTransition(() => {
+        router.refresh();
+        setOpen(false);
+      });
     } else if (result.errors) {
       setErrors(result.errors);
     }
@@ -217,10 +223,10 @@ export function AddTransactionDialog() {
             <div className="flex gap-3 pt-4">
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={isPending}
                 className="flex-1 bg-emerald-600 text-white hover:bg-emerald-700 h-9 text-sm"
               >
-                {loading ? t.addingText : t.btnAdd}
+                {isPending || loading ? t.addingText : t.btnAdd}
               </Button>
               <Button
                 type="button"

@@ -89,7 +89,7 @@ export function Sidebar() {
 
         {/* Footer */}
         <div className="mt-auto px-6 py-6 flex items-center justify-between">
-          <p className="text-sm text-zinc-500">© 2024 FinFlow</p>
+         {/* <p className="text-sm text-zinc-500">© 2024 FinFlow</p> */}
           <UserButton afterSignOutUrl="/" />
         </div>
       </div>

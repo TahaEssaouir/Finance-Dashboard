@@ -3,9 +3,9 @@
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { ExpenseChart } from "@/components/dashboard/expense-chart";
 import { StatsCards } from "@/components/dashboard/stats-cards";
-import { AddTransactionDialog } from "@/components/transactions/add-transaction-dialog";
 import { usePreferences } from "@/providers/PreferencesProvider";
 import { useEffect, useState } from "react";
+import { Loader } from "@/components/ui/loader";
 
 type Transaction = {
   amount: number | null;
@@ -67,7 +67,7 @@ export default function Home() {
   }, []);
 
   if (!data) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   return (
@@ -81,9 +81,6 @@ export default function Home() {
                   {t.navDashboard}
                 </h1>
                 <p className="text-zinc-400 mt-2 text-sm lg:text-base">{t.welcomeMessage}</p>
-              </div>
-              <div className="flex items-center gap-4 w-full lg:w-auto">
-                <AddTransactionDialog />
               </div>
             </div>
           </header>

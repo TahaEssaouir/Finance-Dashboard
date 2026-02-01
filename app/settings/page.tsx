@@ -67,7 +67,7 @@ export default function SettingsPage() {
 
   return (
     <DashboardLayout>
-      <div className="p-6 md:p-12 max-w-4xl mx-auto">
+      <div className="p-6 md:p-12">
         {/* Header */}
         <header className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">{t.preferencesTitle}</h1>

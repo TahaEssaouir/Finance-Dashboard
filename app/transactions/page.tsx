@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { Loader } from "@/components/ui/loader";
 
 type Transaction = {
   id: string;
@@ -98,7 +99,7 @@ function TransactionsContent() {
   if (loading) {
     return (
       <div className="p-4 md:p-12 space-y-3 md:space-y-6">
-        <div className="text-center text-zinc-400">Loading...</div>
+        <Loader />
       </div>
     );
   }
@@ -258,7 +259,7 @@ export default function TransactionsPage() {
     <DashboardLayout>
       <Suspense fallback={
         <div className="p-4 md:p-12 space-y-3 md:space-y-6">
-          <div className="text-center text-zinc-400">Loading transactions...</div>
+          <Loader />
         </div>
       }>
         <TransactionsContent />
