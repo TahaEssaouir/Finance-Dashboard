@@ -13,27 +13,48 @@ const transactionSchema = z.object({
   date: z.string(),
 });
 
-export async function addTransaction(data: any) {
-  const { userId } = await auth();
-  if (!userId) throw new Error('Unauthorized');
+type ActionResponse = {
+  success: boolean;
+  message?: string;
+  errors?: Record<string, string[]>;
+};
 
-  const validated = transactionSchema.parse(data);
+export async function addTransaction(data: any): Promise<ActionResponse> {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error('Unauthorized');
 
-  await prisma.transaction.create({
-    data: {
-      title: validated.title,
-      amount: validated.amount,
-      type: validated.type,
-      category: validated.category,
-      date: new Date(validated.date),
-      userId,
-    },
-  });
+    const validated = transactionSchema.parse(data);
 
-  // Force cache revalidation for relevant routes
-  revalidatePath('/');
-  revalidatePath('/dashboard');
-  revalidatePath('/transactions');
+    await prisma.transaction.create({
+      data: {
+        title: validated.title,
+        amount: validated.amount,
+        type: validated.type,
+        category: validated.category,
+        date: new Date(validated.date),
+        userId,
+      },
+    });
 
-  return { success: true };
+    // Force cache revalidation for relevant routes
+    revalidatePath('/');
+    revalidatePath('/dashboard');
+    revalidatePath('/transactions');
+
+    return { success: true };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return {
+        success: false,
+        message: "Validation error",
+        errors: error.flatten().fieldErrors,
+      };
+    }
+
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
 }
